@@ -1,63 +1,87 @@
-import java.text.SimpleDateFormat
+import java.text.{ParseException, SimpleDateFormat}
 
 import org.joda.time.{Days, DateTime}
 import org.joda.time.DateTimeConstants._
 
 import scala.io.StdIn
 
-object TravellingAllowance extends App {
+object TravellingAllowance extends App with DateParser with Calculator with InputReader {
 
-  println("Input start date(yyyy-MM-dd): ")
+  println("Input start date(MM-dd or yyyy-MM-dd): ")
 
-  val startDate = parseDate(readLine())
+  val startDate = parseStartDate(readLine())
 
-  println("Input end date(yyyy-MM-dd, default today): ")
+  println("Input end date(MM-dd or yyyy-MM-dd, default today): ")
 
-  val endDate = Option(readLine()).filter(_.trim.length > 0).map(parseDate).getOrElse(new DateTime)
+  val endDate = parseEndDate(readLine())
 
   println("Input money per weekday(150): ")
 
-  val perWeekday = Option(readLine()).filter(_.length > 0).map(_.toInt).getOrElse(150)
+  val perWeekday = parseWeekdayAllowance(readLine(), 150)
 
   println("Input money per weekend-day(350): ")
 
-  val perWeekend = Option(readLine()).filter(_.length > 0).map(_.toInt).getOrElse(350)
-
+  val perWeekend = parseWeekendAllowance(readLine(), 350)
 
   println("########################################")
-  println(s"${short(startDate)} ~ ${short(endDate)}")
+  println(s"${display(startDate)} ~ ${display(endDate)}")
   println(s"weekday: $perWeekday, weekend: $perWeekend")
   println()
   println(s"total days: $totalDays")
   println(s"weekday count: $weekdayCount, weekend day count: $weekendDayCount")
   println(s"Total: $total")
   println()
-  println(s"${short(startDate)} ~ ${short(endDate)}, $totalDays days, $perWeekday*$weekdayCount+$perWeekend*$weekendDayCount=$total")
-
-  private def total = weekdayCount * perWeekday + weekendDayCount * perWeekend
-  private def totalDays = Days.daysBetween(startDate.toLocalDate, endDate.toLocalDate).getDays
-  private def weekdayCount = totalDays - weekendDayCount
-  private def weekendDayCount = (startDate.getDayOfYear to endDate.getDayOfYear).count(isWeekend)
-
-  private def parseDate(str: String): DateTime = {
-    new DateTime(format.parse(str))
-  }
-
-  private def format = {
-    val format = new SimpleDateFormat("yyyy-MM-dd")
-    format.setLenient(false)
-    format
-  }
-
-  private def isWeekend(index: Int): Boolean = {
-    val ddd = startDate.minusDays(index).getDayOfWeek
-    ddd == SATURDAY || ddd == SUNDAY
-  }
+  println(s"${display(startDate)} ~ ${display(endDate)}, $totalDays days, $perWeekday*$weekdayCount+$perWeekend*$weekendDayCount=$total")
 
 
   private def readLine() = StdIn.readLine().trim
 
-  private def short(date: DateTime): String = {
-    format.format(date.toDate)
+}
+
+trait InputReader {
+  this: DateParser =>
+
+  def parseStartDate(input: String) = parseDate(input)
+  def parseEndDate(input: String) = Option(input).filter(_.trim.length > 0).map(parseDate).getOrElse(new DateTime)
+  def parseWeekdayAllowance(input: String, defaultValue: Int): Int = Option(input).filter(_.length > 0).map(_.toInt).getOrElse(defaultValue)
+  def parseWeekendAllowance(input: String, defaultValue: Int): Int = Option(input).filter(_.length > 0).map(_.toInt).getOrElse(defaultValue)
+}
+
+trait Calculator {
+  val startDate: DateTime
+  val endDate: DateTime
+  val perWeekday: Int
+  val perWeekend: Int
+
+  def total = weekdayCount * perWeekday + weekendDayCount * perWeekend
+  def totalDays = Days.daysBetween(startDate.toLocalDate, endDate.toLocalDate).getDays + 1
+  def weekdayCount = totalDays - weekendDayCount
+  def weekendDayCount = (0 until totalDays).count(isWeekend)
+
+  private def isWeekend(index: Int): Boolean = {
+    val ddd = startDate.plusDays(index).getDayOfWeek
+    ddd == SATURDAY || ddd == SUNDAY
   }
+
+}
+
+trait DateParser {
+  def parseDate(str: String): DateTime = {
+    try {
+      new DateTime(formatter("MM-dd").parse(str)).withYear(new DateTime().getYear)
+    } catch {
+      case e: ParseException => new DateTime(formatter().parse(str))
+    }
+  }
+
+  def display(date: DateTime): String = {
+    formatter().format(date.toDate)
+  }
+
+  private def formatter(pattern: String = "yyyy-MM-dd") = {
+    val format = new SimpleDateFormat(pattern)
+    format.setLenient(false)
+    format
+  }
+
 }
