@@ -31,3 +31,5 @@ libraryDependencies ++= Seq(
   "org.jsoup" % "jsoup" % "1.7.3",
   "org.specs2" %% "specs2" % "2.4.2" % "test"
 )
+
+mainClass in run := Some("TravellingAllowance")
