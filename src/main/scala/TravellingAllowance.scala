@@ -25,7 +25,7 @@ object TravellingAllowance extends App with DateParser with Calculator with Inpu
 
   println(
     s"""
-       |########################################
+       |#############################################################
        |${display(startDate)} ~ ${display(endDate)}
        |
        |total days: $totalDays
@@ -35,6 +35,7 @@ object TravellingAllowance extends App with DateParser with Calculator with Inpu
        |Total allowance: $total
        |
        |${display(startDate)} ~ ${display(endDate)}, $totalDays days, $weekdayAllowance*$weekdayCount+$weekendAllowance*$weekendDayCount=$total
+       |#############################################################
      """.trim.stripMargin)
 
   private def readLine() = StdIn.readLine().trim
