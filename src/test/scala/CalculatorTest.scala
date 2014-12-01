@@ -86,8 +86,8 @@ class CalculatorTest extends Specification {
                  thePerWeekend: Int = 5) = new Calculator {
     override val startDate = theStartDate
     override val endDate = theEndDate
-    override val perWeekday = thePerWeekday
-    override val perWeekend = thePerWeekend
+    override val weekdayAllowance = thePerWeekday
+    override val weekendAllowance = thePerWeekend
   }
 
 }

@@ -17,11 +17,11 @@ object TravellingAllowance extends App with DateParser with Calculator with Inpu
 
   println("Input allowance for weekday(¥150 if empty): ")
 
-  val perWeekday = parseWeekdayAllowance(readLine(), 150)
+  val weekdayAllowance = parseWeekdayAllowance(readLine(), 150)
 
   println("Input allowance for weekend(¥350 if empty): ")
 
-  val perWeekend = parseWeekendAllowance(readLine(), 350)
+  val weekendAllowance = parseWeekendAllowance(readLine(), 350)
 
   println(
     s"""
@@ -31,10 +31,10 @@ object TravellingAllowance extends App with DateParser with Calculator with Inpu
        |total days: $totalDays
        |weekday count: $weekdayCount, weekend day count: $weekendDayCount
        |
-       |allowance for weekday: $perWeekday, weekend: $perWeekend
+       |allowance for weekday: $weekdayAllowance, weekend: $weekendAllowance
        |Total allowance: $total
        |
-       |${display(startDate)} ~ ${display(endDate)}, $totalDays days, $perWeekday*$weekdayCount+$perWeekend*$weekendDayCount=$total
+       |${display(startDate)} ~ ${display(endDate)}, $totalDays days, $weekdayAllowance*$weekdayCount+$weekendAllowance*$weekendDayCount=$total
      """.trim.stripMargin)
 
   private def readLine() = StdIn.readLine().trim
@@ -44,8 +44,8 @@ object TravellingAllowance extends App with DateParser with Calculator with Inpu
 trait InputReader {
   this: DateParser =>
 
-  def parseStartDate(input: String) = parseDate(input)
-  def parseEndDate(input: String) = Option(input).filter(_.trim.length > 0).map(parseDate).getOrElse(new DateTime)
+  def parseStartDate(input: String): DateTime = parseDate(input)
+  def parseEndDate(input: String): DateTime = Option(input).filter(_.trim.length > 0).map(parseDate).getOrElse(new DateTime)
   def parseWeekdayAllowance(input: String, defaultValue: Int): Int = Option(input).filter(_.length > 0).map(_.toInt).getOrElse(defaultValue)
   def parseWeekendAllowance(input: String, defaultValue: Int): Int = Option(input).filter(_.length > 0).map(_.toInt).getOrElse(defaultValue)
 }
@@ -53,17 +53,17 @@ trait InputReader {
 trait Calculator {
   val startDate: DateTime
   val endDate: DateTime
-  val perWeekday: Int
-  val perWeekend: Int
+  val weekdayAllowance: Int
+  val weekendAllowance: Int
 
-  def total = weekdayCount * perWeekday + weekendDayCount * perWeekend
+  def total = weekdayCount * weekdayAllowance + weekendDayCount * weekendAllowance
   def totalDays = Days.daysBetween(startDate.toLocalDate, endDate.toLocalDate).getDays + 1
   def weekdayCount = totalDays - weekendDayCount
   def weekendDayCount = (0 until totalDays).count(isWeekend)
 
   private def isWeekend(index: Int): Boolean = {
-    val ddd = startDate.plusDays(index).getDayOfWeek
-    ddd == SATURDAY || ddd == SUNDAY
+    val dayOfWeek = startDate.plusDays(index).getDayOfWeek
+    dayOfWeek == SATURDAY || dayOfWeek == SUNDAY
   }
 
 }
