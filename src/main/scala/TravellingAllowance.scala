@@ -23,16 +23,19 @@ object TravellingAllowance extends App with DateParser with Calculator with Inpu
 
   val perWeekend = parseWeekendAllowance(readLine(), 350)
 
-  println("########################################")
-  println(s"${display(startDate)} ~ ${display(endDate)}")
-  println(s"weekday: $perWeekday, weekend: $perWeekend")
-  println()
-  println(s"total days: $totalDays")
-  println(s"weekday count: $weekdayCount, weekend day count: $weekendDayCount")
-  println(s"Total: $total")
-  println()
-  println(s"${display(startDate)} ~ ${display(endDate)}, $totalDays days, $perWeekday*$weekdayCount+$perWeekend*$weekendDayCount=$total")
-
+  println(
+    s"""
+       |########################################
+       |${display(startDate)} ~ ${display(endDate)}
+       |
+       |total days: $totalDays
+       |weekday count: $weekdayCount, weekend day count: $weekendDayCount
+       |
+       |allowance for weekday: $perWeekday, weekend: $perWeekend
+       |Total allowance: $total
+       |
+       |${display(startDate)} ~ ${display(endDate)}, $totalDays days, $perWeekday*$weekdayCount+$perWeekend*$weekendDayCount=$total
+     """.trim.stripMargin)
 
   private def readLine() = StdIn.readLine().trim
 
