@@ -7,19 +7,19 @@ import scala.io.StdIn
 
 object TravellingAllowance extends App with DateParser with Calculator with InputReader {
 
-  println("Input start date(MM-dd or yyyy-MM-dd): ")
+  println("Input start date(yyyy-MM-dd, or MM-dd if it's in current year): ")
 
   val startDate = parseStartDate(readLine())
 
-  println("Input end date(MM-dd or yyyy-MM-dd, default today): ")
+  println("Input end date(MM-dd or yyyy-MM-dd, use today if empty): ")
 
   val endDate = parseEndDate(readLine())
 
-  println("Input money per weekday(150): ")
+  println("Input allowance for weekday(¥150 if empty): ")
 
   val perWeekday = parseWeekdayAllowance(readLine(), 150)
 
-  println("Input money per weekend-day(350): ")
+  println("Input allowance for weekend(¥350 if empty): ")
 
   val perWeekend = parseWeekendAllowance(readLine(), 350)
 
