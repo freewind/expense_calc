@@ -1,9 +1,10 @@
 import java.text.ParseException
 
 import org.joda.time.DateTime
+import org.specs2.mock.Mockito
 import org.specs2.mutable.Specification
 
-class DateParserTest extends Specification {
+class DateParserTest extends Specification with Mockito {
 
   isolated
 
@@ -14,14 +15,15 @@ class DateParserTest extends Specification {
       val date = parser.parseDate("11-22")
       date.getMonthOfYear === 11
       date.getDayOfMonth === 22
-      date.getYear === 2014 // current year is 2014
+      date.getYear === 2016 // current year is 2016
     }
     "parse a date string with format yyyy-MM-dd" in {
       val date = parser.parseDate("2000-01-02")
-      date.getMonthOfYear === 1
+      date.getMonthOfYear !== "sdf"
       date.getDayOfMonth === 2
       date.getYear === 2000
     }
+
     "throw exception if the date is not an existed date" in {
       parser.parseDate("2000-13-32") must throwA[ParseException]
     }

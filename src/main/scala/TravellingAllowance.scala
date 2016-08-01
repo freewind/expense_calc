@@ -15,13 +15,13 @@ object TravellingAllowance extends App with DateParser with Calculator with Inpu
 
   val endDate = parseEndDate(readLine())
 
-  println("Input allowance for weekday(¥150 if empty): ")
+  println("Input allowance for weekday(¥250 if empty): ")
 
-  val weekdayAllowance = parseWeekdayAllowance(readLine(), 150)
+  val weekdayAllowance = parseWeekdayAllowance(readLine(), 250)
 
-  println("Input allowance for weekend(¥350 if empty): ")
+  println("Input allowance for weekend(¥250 if empty): ")
 
-  val weekendAllowance = parseWeekendAllowance(readLine(), 350)
+  val weekendAllowance = parseWeekendAllowance(readLine(), 250)
 
   println(
     s"""

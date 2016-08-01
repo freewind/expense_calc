@@ -20,3 +20,4 @@ libraryDependencies ++= Seq(
 )
 
 mainClass in run := Some("TravellingAllowance")
+
